@@ -1,0 +1,11 @@
+{
+  "slug": "pad-light-choreographer",
+  "title": "Pad Light Choreographer",
+  "territory": "games-creative",
+  "user": "A MIDI-pad owner who wants hardware-first beat practice or tiny performances, with pad lights giving the next cue instead of a mouse-driven screen.",
+  "smallest_useful_product": "Web MIDI PWA that discovers common grid pads, plays four-lane call-and-response patterns, lights target pads, and exports/imports compact JSON routines.",
+  "success_measure": "60% of supported-device visitors complete the connection test and play a first cue routine within five minutes; at least 30% save a routine.",
+  "artifact_class": "pwa-offline",
+  "monetization": "free",
+  "constraints": "Use only documented Web MIDI messages, test device mappings conservatively, and make unsupported hardware harmless; no copyrighted song content."
+}
