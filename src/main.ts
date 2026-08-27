@@ -58,9 +58,9 @@ function connectionLabel(): string {
 function render(): void {
   app.innerHTML = `
     <header class="site-header">
-      <a class="brand" href="#practice" data-view="practice" aria-label="PLC / 04 — Pad Light Choreographer, practice view">
+      <a class="brand" href="#practice" data-view="practice">
         <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-        <span>PLC / 04</span>
+        <span>PLC / 04<span class="sr-only"> — Pad Light Choreographer, practice view</span></span>
       </a>
       <nav aria-label="Primary">
         <button class="nav-tab ${view === 'practice' ? 'is-active' : ''}" data-view="practice">Play</button>
@@ -151,8 +151,8 @@ function practiceView(): string {
 
 function padButton(lane: Lane, isTarget: boolean): string {
   const shape = ['●', '▲', '■', '◆'][lane];
-  return `<button class="practice-pad lane-${lane} ${isTarget ? 'is-target' : ''} ${pressedLane === lane ? 'is-pressed' : ''}" data-lane="${lane}" aria-label="0${lane + 1} ${shape} ${laneNames[lane]}. Lane ${lane + 1}. Keyboard ${lane + 1}.${isTarget ? ' Next cue.' : ''}" aria-pressed="${pressedLane === lane}">
-    <span class="pad-number">0${lane + 1}</span><span class="pad-shape" aria-hidden="true">${shape}</span><strong>${laneNames[lane]}</strong><kbd>${lane + 1}</kbd>${isTarget ? '<span class="next-label">Next</span>' : ''}
+  return `<button class="practice-pad lane-${lane} ${isTarget ? 'is-target' : ''} ${pressedLane === lane ? 'is-pressed' : ''}" data-lane="${lane}" aria-pressed="${pressedLane === lane}">
+    <span class="pad-number">0${lane + 1}</span><span class="pad-shape" aria-hidden="true">${shape}</span><strong>${laneNames[lane]}</strong><kbd>${lane + 1}</kbd>${isTarget ? '<span class="next-label">Next</span>' : ''}<span class="sr-only">Lane ${lane + 1}.${isTarget ? ' Next cue.' : ''}</span>
   </button>`;
 }
 
