@@ -1,0 +1,21 @@
+{
+  "name": "Pad Light Choreographer",
+  "short_name": "Pad Light",
+  "description": "Build four-lane pad-light cues and practise them hardware-first.",
+  "start_url": "/?v=1",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F4EEDB",
+  "theme_color": "#F4EEDB",
+  "categories": ["music", "games", "utilities"],
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/assets/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Practise a routine", "url": "/#practice" },
+    { "name": "Pair MIDI", "url": "/#connect" }
+  ]
+}
