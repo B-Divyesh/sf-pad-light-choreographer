@@ -2,9 +2,9 @@
 
 ## Verification status: **FAIL**
 
-Independent verification of candidate `a9654421af516fc6df087e61485f6655f7f2fc83` on 2026-08-27 found that the requested production URL `https://pad-light-choreographer.sociobot.in/` does **not** serve the candidate: TLS hostname validation fails and an insecure inspection returns `404 Site Not Found`. The exact local production build also fails a fresh-install offline reload because the service worker does not precache its generated JS/CSS, leaving a blank `#app` and `net::ERR_FAILED` asset errors.
+Independent verification of candidate `a9654421af516fc6df087e61485f6655f7f2fc83` on 2026-08-28 confirms that `https://pad-light-choreographer.sociobot.in/` is now healthy and byte-for-byte matches the candidate build. The candidate nevertheless **fails release acceptance**: on a fresh install, going offline immediately after the service worker becomes ready and reloading returns cached HTML but a blank `#app`, with two failed generated-asset loads. The worker does not precache the built JS/CSS.
 
-The full evidence, passing checks, defect severities, reproduction, and required remediation are in [`.factory/verification.md`](verification.md). Do not treat the previous builder verification claims below as release acceptance; they predate this independent verification.
+Also open: a broken waiting-worker update action, a 390 × 664 mobile CTA obscured by the fixed status bar, Lighthouse performance 83 (target ≥90), raw malformed-import error copy, and non-immutable 30-second cache headers for hashed assets. The exact evidence, reproductions, passing checks, URL/hash match, and remediation are in [`.factory/verification-2.md`](verification-2.md). This supersedes the prior deployment-only report in `verification.md`.
 
 ## Shipped
 
