@@ -56,3 +56,9 @@ Build with `npm run build` and deploy the contents of `dist/` as the static arti
 
 - Physical MIDI hardware was unavailable in this container. Standards-shaped input/output mocks cover the documented non-SysEx note path; vendor-specific LED protocols remain intentionally out of scope.
 - Safari and Firefox may not expose Web MIDI consistently. The keyboard practice path remains available and is surfaced by the UI.
+
+## Independent verification 3 — 2026-08-28 UTC
+
+**Release status: PASS.** Independent QA verified candidate `cbd606ebc14ba71d32e0b8512e650fb3d77508b5` against <https://pad-light-choreographer.sociobot.in/> from a clean checkout. `npm ci`, audit, all 4 Vitest checks, all 17 applicable Playwright checks, and `npm run build` passed. The exact local build matched the deployed HTML, service worker, JS, and CSS SHA-256 values; the live application had no console/page errors and returned only same-origin requests.
+
+Fresh local and live browser contexts proved the repaired offline path: `plc-v1.1.0-shell` precached the emitted CSS/JS and the first offline reload rendered the app and completed a cue. Desktop keyboard practice, arrange/import/export validation, MIDI denial recovery, 390 × 664 touch layout, focus visibility, reduced motion, and axe serious/critical checks passed. Mobile Lighthouse was 95 Performance / 100 Accessibility / 100 Best Practices. No P0–P3 defects were observed. See `verification-3.md` for exact commands, measurements, headers, hashes, and the physical-MIDI limitation.
