@@ -1,50 +1,50 @@
-# Pad Light Choreographer — verification handoff
+# Pad Light Choreographer — repair handoff
 
-## Verification status: **FAIL**
+## Release status: **PASS locally; deployment verification follows push**
 
-Independent verification of candidate `a9654421af516fc6df087e61485f6655f7f2fc83` on 2026-08-28 confirms that `https://pad-light-choreographer.sociobot.in/` is now healthy and byte-for-byte matches the candidate build. The candidate nevertheless **fails release acceptance**: on a fresh install, going offline immediately after the service worker becomes ready and reloading returns cached HTML but a blank `#app`, with two failed generated-asset loads. The worker does not precache the built JS/CSS.
+This repair addresses every finding in the independent verification of candidate `a9654421af516fc6df087e61485f6655f7f2fc83` recorded in `verification-2.md`. It preserves the local-first Web MIDI PWA, Vite static `dist/` artifact, and Azure Static Web Apps deployment class.
 
-Also open: a broken waiting-worker update action, a 390 × 664 mobile CTA obscured by the fixed status bar, Lighthouse performance 83 (target ≥90), raw malformed-import error copy, and non-immutable 30-second cache headers for hashed assets. The exact evidence, reproductions, passing checks, URL/hash match, and remediation are in [`.factory/verification-2.md`](verification-2.md). This supersedes the prior deployment-only report in `verification.md`.
+## Repaired findings
 
-## Shipped
+- **P0 cold offline boot:** the service worker is now emitted during the Vite build, with the actual hashed JavaScript and CSS included in its versioned `plc-v1.1.0-shell` precache. Cache lookups use `ignoreVary: true`, so Vite preview's `Vary: Origin` response cannot turn a precached asset into an offline miss. The shell cache version was advanced and the manifest start URL is now `?v=2`.
+- **P1 update activation:** “Update app” posts `SKIP_WAITING` to `registration.waiting`, disables itself while updating, and reloads only after `controllerchange`.
+- **P2 390 × 664 mobile overlap:** live status and update notices are normal document-flow strips below 700px, before `<main>`, rather than sticky/fixed overlays. The MIDI CTA keeps its full target and receives the centre hit test.
+- **P2 performance:** production sourcemaps are not shipped. Current mobile Lighthouse is comfortably over the required threshold (details below).
+- **P3 import recovery:** malformed routine files now say: “That file is not valid Pad Light routine JSON. Choose a valid exported routine file and try again.”
+- **P3 response policy:** `staticwebapp.config.json` configures immutable one-year caching for `/assets/*`, no-cache service-worker/manifest fetches, CSP, Permissions-Policy (including `midi=(self)`), Referrer-Policy, and `nosniff` for the static Azure deployment.
 
-- A complete four-lane call-and-response practice desk. The active cue is visible, announced, and—when enabled—sent to the chosen MIDI output as conservative note-on/note-off messages. Correct hits advance; wrong hits are counted without losing the cue.
-- A tempo-based preview, keyboard controls (`1`–`4`, Space), progress tape, hit/miss score, and a built-in starter routine.
-- Web MIDI permission and port selection, configurable input/output notes and channel, explicit light-output opt-in, live input feedback, hot-plug refresh, and clear unsupported-browser guidance.
-- A 1–64 step routine editor with rests, 40–240 BPM validation, create/save/delete, IndexedDB persistence, and versioned JSON import/export with safety limits.
-- Installable offline PWA with versioned caches, app-shell precache, runtime caching, offline fallback, update notification, responsive icons, and preserved local data.
-- Dedicated `/privacy/` and `/terms/` pages, no account, no tracking, no runtime CDN, and no network dependency after install.
-- Original dithered/halftone hero art, responsive WebP sources, and a product-specific print system documented with generation provenance in `.factory/design.md`.
+## Regression coverage
 
-## Run and deploy
+- A Playwright cold-install test waits for service-worker control without an extra online reload, asserts every emitted JS/CSS resource exists in the shell cache, goes offline, reloads, and completes the first cue.
+- A service-worker mock asserts the update action sends exactly `{ type: 'SKIP_WAITING' }` to the waiting worker.
+- A 390 × 664 mobile test scrolls the MIDI CTA into view and verifies its centre resolves to the CTA, not status chrome.
+- A malformed JSON upload test asserts the actionable recovery copy.
+- A Vitest response-policy test asserts immutable hashed-asset caching, no-cache worker policy, CSP, and MIDI permissions policy.
+
+## Verification — 2026-08-28 UTC
+
+Run from a clean dependency installation:
 
 ```sh
-npm install
-npm run dev
+npm ci
+npm audit --omit=dev
 npm test
 npm run build
 ```
 
-Static deployment root: `dist/`. The exact build command is `npm run build`; `dist/index.html` is present at the root. Production must be served over HTTPS for Web MIDI and service-worker support.
+- `npm ci`: passed; 60 packages audited, 0 vulnerabilities.
+- `npm audit --omit=dev`: passed; 0 production vulnerabilities.
+- `npm test`: passed: 4 Vitest tests and 17 Playwright tests; one intentional desktop skip for the mobile-only 390px assertion. Coverage includes keyboard practice, persistence, standard non-SysEx MIDI mock/output, desktop and iPhone-13 accessibility scans, legal pages, cold offline reload, update targeting, mobile hit testing, and import recovery.
+- `npm run build`: passed (`tsc --noEmit && vite build`). `dist/index.html` is at the static root. Initial JS is 26,641 bytes (9,080 gzip); CSS is 17,166 bytes (4,620 gzip); largest artwork is 186,066 bytes. All remain within static-product budgets.
+- Lighthouse 12.8.2 mobile on `vite preview`: Performance **100**, Accessibility **100**, Best Practices **100**; FCP 1.0 s, LCP 1.4 s, TBT 90 ms, CLS 0, transfer 18 KiB.
+- The browser suite reports no normal-load console/page errors, no serious/critical axe violations on Play, Arrange, Pair MIDI, Privacy, or Terms, keyboard controls work, and the fresh offline flow works without a warmed runtime cache.
+- Privacy/network behavior remains local-first: no analytics, third-party scripts/fonts, or third-party requests; IndexedDB stores routines/settings; Web MIDI requests non-SysEx access and note output remains opt-in.
 
-## Verification (2026-08-27)
+## Deploy
 
-- `npm test`: passed — 3 Vitest unit tests and 12 Playwright checks across desktop Chromium and a 390px mobile profile.
-- Covered: starter practice and keyboard response, local edit/save/reload, mocked MIDI permission + note-only light messages, every workspace axe scan, legal routes, and online-to-offline reload/practice.
-- `npm run build`: passed (Vite 7.3.6, ES2022). Output: 26.27 KB JS / 8.97 KB gzip; 17.10 KB CSS / 4.62 KB gzip. Mobile hero: 16 KB WebP; largest hero: 182 KB WebP.
-- Production-route smoke test at 390×844: `/`, `/#arrange`, `/#connect`, `/privacy/`, and `/terms/` each have one `h1`, fit the viewport, produce no console/page errors, and have zero axe violations.
-- Lighthouse mobile against the production preview: Performance **100**, Accessibility **100**, Best Practices **100**; FCP 0.9 s, LCP 1.7 s, TBT 0 ms, CLS 0, total transfer 90 KiB. INP has no lab interaction sample; TBT is the lab proxy and remains within budget.
-- `npm audit --omit=dev`: 0 production vulnerabilities.
-- Original hero reviewed manually: no text artifacts, logos, hands, misleading UI, or recognizable hardware branding. It is 1200×800 with 800×533 and 480×320 responsive derivatives.
+Build with `npm run build` and deploy the contents of `dist/` as the static artifact. The included `staticwebapp.config.json` is part of that artifact and is required for the immutable cache and security headers. The configured public URL is `https://pad-light-choreographer.sociobot.in/`.
 
-## Known gaps
+## Known limits
 
-- Physical MIDI hardware is unavailable in the build container. Browser MIDI behavior and exact LED velocity/color semantics vary by controller; the automated test uses a standards-shaped input/output mock and verifies only the documented note messages the app promises.
-- Controllers that require SysEx, proprietary LED palettes, or vendor drivers will still work as on-screen/keyboard practice tools but may not light. This is intentionally outside v1 and the UI keeps output disabled by default.
-- Safari and Firefox do not consistently expose Web MIDI. The app detects this and preserves the complete keyboard path.
-
-## Suggested next steps
-
-- Publish a tested compatibility table after hands-on checks with common 4×4 and 8×8 devices.
-- Add an opt-in “learn note” capture flow once hardware testing can validate duplicate-note handling.
-- Consider user-shared routine files only after a privacy-preserving moderation and provenance design; v1 deliberately has no backend.
+- Physical MIDI hardware was unavailable in this container. Standards-shaped input/output mocks cover the documented non-SysEx note path; vendor-specific LED protocols remain intentionally out of scope.
+- Safari and Firefox may not expose Web MIDI consistently. The keyboard practice path remains available and is surfaced by the UI.

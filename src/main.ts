@@ -25,6 +25,7 @@ let messageTone: 'neutral' | 'success' | 'error' = 'neutral';
 let isOffline = !navigator.onLine;
 let installPrompt: BeforeInstallPromptEvent | null = null;
 let updateReady = false;
+let serviceWorkerRegistration: ServiceWorkerRegistration | null = null;
 const previewTimers: number[] = [];
 
 interface BeforeInstallPromptEvent extends Event {
@@ -72,11 +73,11 @@ function render(): void {
       </button>
     </header>
     ${isOffline ? '<div class="offline-strip" role="status">Offline rehearsal — routines still work and save on this device.</div>' : ''}
+    <div id="live-status" class="live-status" data-tone="${messageTone}" role="status" aria-live="polite">${escapeHtml(message)}</div>
+    ${updateReady ? '<div class="update-toast" role="status"><span>A fresh cue sheet is ready.</span><button id="reload-app">Update app</button></div>' : ''}
     <main id="main" tabindex="-1">
       ${view === 'practice' ? practiceView() : view === 'arrange' ? arrangeView() : connectView()}
     </main>
-    <div id="live-status" class="live-status" data-tone="${messageTone}" role="status" aria-live="polite">${escapeHtml(message)}</div>
-    ${updateReady ? '<div class="update-toast" role="status"><span>A fresh cue sheet is ready.</span><button id="reload-app">Update app</button></div>' : ''}
     <footer>
       <p>Made for pads, not pointers. Local-first, free, and without tracking.</p>
       <div><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><button class="text-button" id="install-app" ${installPrompt ? '' : 'hidden'}>Install app</button></div>
@@ -254,10 +255,21 @@ function bindGlobal(): void {
     installPrompt = null;
     render();
   });
-  document.querySelector('#reload-app')?.addEventListener('click', () => {
-    navigator.serviceWorker.controller?.postMessage({ type: 'SKIP_WAITING' });
-    location.reload();
-  });
+  document.querySelector('#reload-app')?.addEventListener('click', applyUpdate);
+}
+
+function applyUpdate(): void {
+  const waiting = serviceWorkerRegistration?.waiting;
+  if (!waiting) {
+    updateReady = false;
+    announce('The update is no longer waiting. Check again after the next refresh.');
+    render();
+    return;
+  }
+  const button = document.querySelector<HTMLButtonElement>('#reload-app');
+  if (button) { button.disabled = true; button.textContent = 'Updating…'; }
+  navigator.serviceWorker.addEventListener('controllerchange', () => location.reload(), { once: true });
+  waiting.postMessage({ type: 'SKIP_WAITING' });
 }
 
 function bindPadButtons(): void {
@@ -441,7 +453,13 @@ async function importFile(event: Event): Promise<void> {
   if (!file) return;
   try {
     if (file.size > 100_000) throw new Error('That file is too large. Choose a routine under 100 KB.');
-    const parsed = JSON.parse(await file.text()) as unknown;
+    const contents = await file.text();
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(contents);
+    } catch {
+      throw new Error('That file is not valid Pad Light routine JSON. Choose a valid exported routine file and try again.');
+    }
     const imported = normalizeRoutine(parsed);
     imported.id = crypto.randomUUID();
     current = imported;
@@ -591,6 +609,7 @@ window.addEventListener('beforeinstallprompt', (event) => { event.preventDefault
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').then((registration) => {
+    serviceWorkerRegistration = registration;
     if (registration.waiting) { updateReady = true; if (!busy) render(); }
     registration.addEventListener('updatefound', () => {
       const worker = registration.installing;

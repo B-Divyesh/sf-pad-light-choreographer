@@ -65,11 +65,21 @@ test('serves the privacy and terms pages', async ({ page }) => {
   await expect(page.locator('h1')).toHaveText('Terms');
 });
 
-test('continues working offline after installation', async ({ page, context, browserName }) => {
+test('precaches built JavaScript and CSS and works on the first offline reload', async ({ page, context, browserName }) => {
   test.skip(browserName !== 'chromium', 'Service worker check runs once in Chromium.');
   await page.goto('/');
   await page.waitForFunction(() => navigator.serviceWorker?.ready);
-  await page.reload();
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+  const uncachedAssets = await page.evaluate(async () => {
+    const shellName = (await caches.keys()).find((name) => name.endsWith('-shell'));
+    if (!shellName) return ['missing app-shell cache'];
+    const shell = await caches.open(shellName);
+    const assets = performance.getEntriesByType('resource')
+      .map((entry) => entry.name)
+      .filter((url) => /\/assets\/.*\.(?:js|css)$/.test(url));
+    return (await Promise.all(assets.map(async (url) => (await shell.match(url)) ? null : url))).filter(Boolean);
+  });
+  expect(uncachedAssets).toEqual([]);
   await context.setOffline(true);
   await page.reload();
   await expect(page.getByText(/Offline rehearsal/)).toBeVisible();
@@ -77,4 +87,52 @@ test('continues working offline after installation', async ({ page, context, bro
   await page.keyboard.press('1');
   await expect(page.locator('.score-strip strong').nth(1)).toHaveText('1');
   await context.setOffline(false);
+});
+
+test('sends the update command to the waiting worker', async ({ page }) => {
+  await page.addInitScript(() => {
+    const events = new EventTarget();
+    const messages: unknown[] = [];
+    const waiting = { postMessage: (message: unknown) => messages.push(message) };
+    const registration = { waiting, addEventListener: () => undefined };
+    Object.assign(window, { __serviceWorkerTest: { messages } });
+    Object.defineProperty(navigator, 'serviceWorker', {
+      configurable: true,
+      value: {
+        register: async () => registration,
+        addEventListener: events.addEventListener.bind(events),
+      },
+    });
+  });
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: 'Update app' })).toBeVisible();
+  await page.getByRole('button', { name: 'Update app' }).click();
+  expect(await page.evaluate(() => (window as unknown as { __serviceWorkerTest: { messages: unknown[] } }).__serviceWorkerTest.messages)).toEqual([
+    { type: 'SKIP_WAITING' },
+  ]);
+});
+
+test('keeps the 390px MIDI call to action unobstructed by live status', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'This regression is specific to the 390px mobile layout.');
+  await page.setViewportSize({ width: 390, height: 664 });
+  await page.goto('/');
+  const cta = page.locator('.hero-actions button').nth(1);
+  await cta.scrollIntoViewIfNeeded();
+  const point = await cta.evaluate((element) => {
+    const bounds = element.getBoundingClientRect();
+    const topElement = document.elementFromPoint(bounds.left + bounds.width / 2, bounds.top + bounds.height / 2);
+    return topElement === element || element.contains(topElement);
+  });
+  expect(point).toBe(true);
+});
+
+test('explains how to recover from malformed routine JSON', async ({ page }) => {
+  await page.goto('/#arrange');
+  await page.locator('#import-routine').setInputFiles({
+    name: 'broken.padlight.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from('{not valid json'),
+  });
+  await expect(page.getByRole('status')).toContainText('not valid Pad Light routine JSON');
+  await expect(page.getByRole('status')).toContainText('Choose a valid exported routine file');
 });

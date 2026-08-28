@@ -304,7 +304,8 @@ footer > div { display: flex; gap: 18px; }
   .input-test { grid-template-columns: 1fr; padding: 42px 18px; }
   .mini-pads { grid-template-columns: repeat(4, minmax(54px, 1fr)); }
   .input-test > button { grid-column: auto; justify-self: stretch; }
-  .live-status { position: sticky; bottom: 0; right: auto; max-width: none; margin: 0; border-left: 0; border-right: 0; box-shadow: none !important; }
+  .live-status { position: static; max-width: none; margin: 0; border-left: 0; border-right: 0; box-shadow: none !important; }
+  .update-toast { position: static; margin: 0; box-shadow: none; border-left: 0; border-right: 0; }
   footer { grid-template-columns: 1fr; padding-inline: 18px; }
   footer > div { flex-wrap: wrap; }
   .art-credit { grid-column: auto; }

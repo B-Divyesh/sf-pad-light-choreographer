@@ -46,7 +46,7 @@ Exports are readable JSON with `format: "pad-light-routine"`, `version: 1`, a na
 
 ## Privacy and deployment
 
-Routines and settings stay in browser IndexedDB. MIDI events never leave the page. Privacy and terms are available at `/privacy/` and `/terms/`. Deploy the contents of `dist/` to any HTTPS-capable static host; no environment variables or backend are required.
+Routines and settings stay in browser IndexedDB. MIDI events never leave the page. Privacy and terms are available at `/privacy/` and `/terms/`. Deploy the contents of `dist/` to the configured Azure Static Web Apps host; `staticwebapp.config.json` sets immutable caching for hashed assets and a no-cache policy for the service worker. No environment variables or backend are required.
 
 Visual direction and generated-art provenance are in [`.factory/design.md`](.factory/design.md). Release verification and known limitations are in [`.factory/handoff.md`](.factory/handoff.md).
 

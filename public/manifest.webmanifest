@@ -2,7 +2,7 @@
   "name": "Pad Light Choreographer",
   "short_name": "Pad Light",
   "description": "Build four-lane pad-light cues and practise them hardware-first.",
-  "start_url": "/?v=1",
+  "start_url": "/?v=2",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
