@@ -46,6 +46,7 @@ npm run build
 - `https://pad-light-choreographer.sociobot.in/` returns HTTPS 200. The factory browser smoke check loaded in 804 ms with no console errors and confirmed the expected title, `lang="en"`, one `h1`, a `main` landmark, and no missing image alt text or unlabeled buttons.
 - Live SHA-256 values match the local production artifact: HTML `6ce829d4…f5306`, service worker `372f375b…a196d0`, JS `c1b93bf3…91e3e`, CSS `9d22e359…10e32`.
 - Live `/assets/index-1KkRPhgQ.js` is `Cache-Control: public, max-age=31536000, immutable`; `/sw.js` is `no-cache, no-store, must-revalidate`. CSP, `Permissions-Policy: … midi=(self)`, `Referrer-Policy`, and `X-Content-Type-Options: nosniff` are present.
+- A brand-new live Chromium context confirmed the shell cache contains the emitted JS/CSS; its first offline reload rendered the app and offline strip with the Start response control available and no console/page errors.
 
 ## Deploy
 
