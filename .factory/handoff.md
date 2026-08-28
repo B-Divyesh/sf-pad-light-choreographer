@@ -1,6 +1,6 @@
 # Pad Light Choreographer — repair handoff
 
-## Release status: **PASS locally; deployment verification follows push**
+## Release status: **PASS — deployed and verified**
 
 This repair addresses every finding in the independent verification of candidate `a9654421af516fc6df087e61485f6655f7f2fc83` recorded in `verification-2.md`. It preserves the local-first Web MIDI PWA, Vite static `dist/` artifact, and Azure Static Web Apps deployment class.
 
@@ -39,6 +39,13 @@ npm run build
 - Lighthouse 12.8.2 mobile on `vite preview`: Performance **100**, Accessibility **100**, Best Practices **100**; FCP 1.0 s, LCP 1.4 s, TBT 90 ms, CLS 0, transfer 18 KiB.
 - The browser suite reports no normal-load console/page errors, no serious/critical axe violations on Play, Arrange, Pair MIDI, Privacy, or Terms, keyboard controls work, and the fresh offline flow works without a warmed runtime cache.
 - Privacy/network behavior remains local-first: no analytics, third-party scripts/fonts, or third-party requests; IndexedDB stores routines/settings; Web MIDI requests non-SysEx access and note output remains opt-in.
+
+## Production identity and response verification
+
+- Deployed with `/opt/fleet/lib/deploy-static.sh pad-light-choreographer dist` after pushing repair commit `de0a90a69c3e2cb9a68bdac5274c059c8fa1fe78` to `main`.
+- `https://pad-light-choreographer.sociobot.in/` returns HTTPS 200. The factory browser smoke check loaded in 804 ms with no console errors and confirmed the expected title, `lang="en"`, one `h1`, a `main` landmark, and no missing image alt text or unlabeled buttons.
+- Live SHA-256 values match the local production artifact: HTML `6ce829d4…f5306`, service worker `372f375b…a196d0`, JS `c1b93bf3…91e3e`, CSS `9d22e359…10e32`.
+- Live `/assets/index-1KkRPhgQ.js` is `Cache-Control: public, max-age=31536000, immutable`; `/sw.js` is `no-cache, no-store, must-revalidate`. CSP, `Permissions-Policy: … midi=(self)`, `Referrer-Policy`, and `X-Content-Type-Options: nosniff` are present.
 
 ## Deploy
 
