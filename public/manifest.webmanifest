@@ -2,7 +2,7 @@
   "name": "Pad Light Choreographer",
   "short_name": "Pad Light",
   "description": "Build four-lane pad-light cues and practise them hardware-first.",
-  "start_url": "/?v=2",
+  "start_url": "/?v=3",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
@@ -15,7 +15,7 @@
     { "src": "/assets/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "Practise a routine", "url": "/#practice" },
-    { "name": "Pair MIDI", "url": "/#connect" }
+    { "name": "Practise a routine", "url": "/" },
+    { "name": "Pair MIDI", "url": "/connect" }
   ]
 }

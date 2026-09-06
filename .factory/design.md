@@ -58,4 +58,4 @@ One generated hero illustration shows a top-down, unbranded four-pad controller 
 - Palette words: warm oat paper, near-black ink, cyan, magenta, tiny amber and green pad accents
 - Negative list: no text, no letters, no numbers, no logos, no brand shapes, no laptop, no photorealism, no gradients, no hands, no watermark
 
-**Generation record:** created 2026-08-27 with the Param Factory Azure image deployment via `/opt/fleet/lib/gen-image.sh`; prompt derived verbatim from the sheet above. Generated output is original for this product. Source PNG and prompt sidecar live in `assets/src/`; shipped WebP lives in `public/assets/`. The site footer discloses AI-assisted artwork.
+**Generation record:** created 2026-08-27 with the Param Factory Azure image deployment via `/opt/fleet/lib/gen-image.sh`; prompt derived verbatim from the sheet above. Generated output is original for this product. Source PNG and prompt sidecar live in `assets/src/`; shipped WebP lives in `public/assets/`. The 1200 × 630 social image is a center crop of the same original illustration, made locally on 2026-09-06. The site footer discloses AI-assisted artwork.

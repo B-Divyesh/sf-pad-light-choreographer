@@ -1,0 +1,58 @@
+[
+  {
+    "id": "midi-discovery",
+    "claim": "Requests non-SysEx Web MIDI access and lists connected inputs and outputs.",
+    "where": "Pair a MIDI pad",
+    "test": "npm test -- --grep @claim:midi-discovery",
+    "sandbox": "Open /demo/connect with a standards-shaped MIDI device and observe the permission request and selected ports."
+  },
+  {
+    "id": "midi-lights",
+    "claim": "Sends cue lights only after opt-in, as note-on and note-off messages on the selected channel.",
+    "where": "Enable cue lights",
+    "test": "npm test -- --grep @claim:midi-lights",
+    "sandbox": "Open /demo/connect with a standards-shaped MIDI output, opt in, select channel 2, and inspect the sent messages."
+  },
+  {
+    "id": "keyboard-practice",
+    "claim": "Keys 1–4 and Space can run response practice.",
+    "where": "Practice help",
+    "test": "npm test -- --grep @claim:keyboard-practice",
+    "sandbox": "Open /demo, start with Space, play the first four sample cues with keys 1–4, then stop with Space."
+  },
+  {
+    "id": "editor-bounds",
+    "claim": "Routine editing limits routines to 1–64 steps and tempos to 40–240 BPM.",
+    "where": "Arrange a routine",
+    "test": "npm test -- --grep @claim:editor-bounds",
+    "sandbox": "Open /demo/arrange, reach both step limits, reject 39 BPM, and save at 240 BPM."
+  },
+  {
+    "id": "portable-json",
+    "claim": "Exports versioned Pad Light JSON and validates imports under 100 KB.",
+    "where": "Routine library",
+    "test": "npm test -- --grep @claim:portable-json",
+    "sandbox": "Open /demo/arrange, inspect an exported file, import a valid routine, and reject an oversized file."
+  },
+  {
+    "id": "local-persistence",
+    "claim": "Routines save in browser storage and survive a reload.",
+    "where": "First-screen facts, routine library",
+    "test": "npm test -- --grep @claim:local-persistence",
+    "sandbox": "Open /demo/arrange, save a named routine, and reload the same demo workspace."
+  },
+  {
+    "id": "offline-reload",
+    "claim": "Works offline after the first visit.",
+    "where": "First-screen facts, Privacy",
+    "test": "npm test -- --grep @claim:offline-reload",
+    "sandbox": "Use a new browser context at /demo, wait for the service worker, go offline, reload, and play the first cue."
+  },
+  {
+    "id": "private-free",
+    "claim": "The free sample flow needs no account and sends no product requests off this origin.",
+    "where": "First-screen facts, Privacy",
+    "test": "npm test -- --grep @claim:private-free",
+    "sandbox": "Record all browser requests during a /demo practice and arrange flow, then verify one origin and no account fields."
+  }
+]

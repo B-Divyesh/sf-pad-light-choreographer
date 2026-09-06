@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config';
 import type { Plugin } from 'vite';
 
-const CACHE_VERSION = 'plc-v1.1.0';
+const CACHE_VERSION = 'plc-v1.2.0';
 
 function serviceWorker(): Plugin {
   return {
@@ -23,9 +23,19 @@ function serviceWorker(): Plugin {
         '/assets/pad-cue-hero-480.webp',
         '/assets/pad-cue-hero-800.webp',
         '/assets/pad-cue-hero.webp',
+        '/assets/pad-cue-social.jpg',
         '/offline.html',
+        '/404.html',
+        '/robots.txt',
+        '/sitemap.xml',
         '/privacy/',
         '/terms/',
+        '/practice',
+        '/arrange',
+        '/connect',
+        '/demo',
+        '/demo/arrange',
+        '/demo/connect',
         ...builtAssets,
       ];
 

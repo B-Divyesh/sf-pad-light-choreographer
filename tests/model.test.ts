@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeRoutine, routineFile } from '../src/model';
+import { normalizeImportedRoutine, normalizeRoutine, routineFile } from '../src/model';
 
 describe('routine format', () => {
   it('normalizes a compact routine', () => {
@@ -17,5 +17,11 @@ describe('routine format', () => {
   it('exports a versioned, portable file', () => {
     const routine = normalizeRoutine({ name: 'Pocket', steps: [3, 2, 1, 0], bpm: 88 });
     expect(JSON.parse(routineFile(routine))).toMatchObject({ format: 'pad-light-routine', version: 1, name: 'Pocket' });
+  });
+
+  it('accepts only the exported routine format during import', () => {
+    expect(normalizeImportedRoutine({ format: 'pad-light-routine', version: 1, name: 'Pocket', steps: [0], bpm: 92 }).name).toBe('Pocket');
+    expect(() => normalizeImportedRoutine({ format: 'other-routine', version: 1, name: 'Pocket', steps: [0], bpm: 92 })).toThrow(/exported/);
+    expect(() => normalizeImportedRoutine({ format: 'pad-light-routine', version: 2, name: 'Pocket', steps: [0], bpm: 92 })).toThrow(/exported/);
   });
 });

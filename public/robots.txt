@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pad-light-choreographer.sociobot.in/sitemap.xml

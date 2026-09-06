@@ -1,55 +1,54 @@
 # Pad Light Choreographer
 
-Pad Light Choreographer is a local-first Web MIDI practice desk for four-lane pad controllers. It lets a performer build a compact cue routine, preview it at tempo, and practise call-and-response while the next hardware pad is lit. It is aimed at controller owners who want to rehearse without setting up a DAW.
+Pad Light Choreographer helps MIDI-pad owners practise four-lane pad-light routines without a DAW. It runs as a local-first browser PWA.
 
-Live: <https://pad-light-choreographer.sociobot.in>
+Live: https://pad-light-choreographer.sociobot.in
 
-## What it does
+## Try it
 
-- Requests standard, non-SysEx Web MIDI access and lists available inputs/outputs.
-- Maps four lanes to configurable MIDI notes (36–39 by default).
-- Sends only note-on and note-off light cues, after explicit opt-in, on a selected channel.
-- Runs an at-your-own-pace response routine with hit/miss feedback plus a tempo preview.
-- Provides keyboard parity with keys `1`–`4` and Space.
-- Edits 1–64 step routines, including rests and 40–240 BPM tempos.
-- Saves locally in IndexedDB and imports/exports versioned JSON files.
-- Installs as a PWA and continues to practise, edit, and save offline.
+Open https://pad-light-choreographer.sociobot.in/demo or select **Try it with sample data** on the first screen. The demo includes two populated routines in a separate browser-storage database. **Reset demo** restores the shipped samples. **Start for real** returns to your own browser storage.
 
-No account, backend, analytics, third-party fonts, copyrighted charts, or vendor-specific MIDI messages are used.
+## What it includes
+
+- Standard non-SysEx Web MIDI pairing with configurable notes.
+- Opt-in note-on and note-off cue lights on a selected MIDI channel.
+- Response practice with keys 1–4, Space, or mapped controller pads.
+- A 1–64 step editor with 40–240 BPM routines.
+- Versioned JSON import and export.
+- Browser-storage persistence and offline practice after the first visit.
+
+Each public product claim and its browser test are listed in .factory/claims.json. Demo storage and reset behavior are documented in .factory/demo.md.
 
 ## Develop
 
 Requires Node.js 20 or newer.
 
-```sh
-npm install
+~~~sh
+npm ci
 npm run dev
-```
+~~~
 
-Open `http://localhost:5173`. For MIDI, use a Chromium-based desktop browser on `localhost` or HTTPS. Connect the controller before choosing **Pair MIDI**. Keyboard practice remains available when Web MIDI is unsupported.
+Open http://localhost:5173. Use a Chromium-based desktop browser on localhost or HTTPS for Web MIDI. Keyboard practice remains available when Web MIDI is unsupported.
 
 ## Test and build
 
-The Playwright version is pinned to match the factory browser image.
-
-```sh
+~~~sh
 npm test
+npm run test:claims
 npm run build
 npm run preview
-```
+~~~
 
-`npm test` runs unit tests plus desktop/mobile Chromium journeys, an axe accessibility scan, and an explicit offline reload. `npm run build` emits the deployable static app to `dist/`, with `dist/index.html` at its root.
-
-## Routine file format
-
-Exports are readable JSON with `format: "pad-light-routine"`, `version: 1`, a name, BPM, and an array of lane numbers `0`–`3` or `null` rests. Imports are validated and limited to 64 steps and 100 KB.
+npm test runs unit checks plus desktop and phone browser journeys against the production build. npm run test:claims runs the documented claim checks. npm run build writes deployable files to dist.
 
 ## Privacy and deployment
 
-Routines and settings stay in browser IndexedDB. MIDI events never leave the page. Privacy and terms are available at `/privacy/` and `/terms/`. Deploy the contents of `dist/` to the configured Azure Static Web Apps host; `staticwebapp.config.json` sets immutable caching for hashed assets and a no-cache policy for the service worker. No environment variables or backend are required.
+Routines and MIDI preferences stay in browser IndexedDB. MIDI messages are processed in the page. The product has no account, analytics, third-party fonts, or backend. The PWA uses a service worker and offers JSON export for routines.
 
-Visual direction and generated-art provenance are in [`.factory/design.md`](.factory/design.md). Release verification and known limitations are in [`.factory/handoff.md`](.factory/handoff.md).
+Deploy dist to the configured static host. The included Static Web Apps configuration provides cache, security, app-route, and designed 404 behavior. Privacy and terms are available at /privacy/ and /terms/.
+
+Visual direction and artwork provenance are in .factory/design.md. Release verification is recorded in .factory/handoff.md.
 
 ## License
 
-MIT — see [`LICENSE`](LICENSE).
+MIT — see LICENSE.

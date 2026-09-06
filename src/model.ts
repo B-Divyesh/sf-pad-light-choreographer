@@ -60,6 +60,15 @@ export function normalizeRoutine(value: unknown): Routine {
   };
 }
 
+export function normalizeImportedRoutine(value: unknown): Routine {
+  if (!value || typeof value !== 'object') throw new Error('The file does not contain a routine.');
+  const source = value as { format?: unknown; version?: unknown };
+  if (source.format !== 'pad-light-routine' || source.version !== 1) {
+    throw new Error('Choose a Pad Light routine JSON file exported by this app.');
+  }
+  return normalizeRoutine(value);
+}
+
 export function routineFile(routine: Routine): string {
   return JSON.stringify({ format: 'pad-light-routine', version: 1, ...routine }, null, 2);
 }

@@ -23,10 +23,31 @@
       "headers": {
         "Cache-Control": "no-cache"
       }
+    },
+    {
+      "route": "/practice",
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/arrange",
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/connect",
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/demo",
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/demo/*",
+      "rewrite": "/index.html"
     }
   ],
-  "navigationFallback": {
-    "rewrite": "/index.html",
-    "exclude": ["/assets/*", "/offline.html", "/privacy/*", "/terms/*", "/sw.js", "/manifest.webmanifest"]
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/404.html"
+    }
   }
 }

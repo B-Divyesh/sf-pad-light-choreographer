@@ -5,7 +5,8 @@ describe('static response policy', () => {
   it('keeps hashed assets immutable while protecting the app shell', () => {
     const config = JSON.parse(readFileSync('public/staticwebapp.config.json', 'utf8')) as {
       globalHeaders: Record<string, string>;
-      routes: Array<{ route: string; headers: Record<string, string> }>;
+      routes: Array<{ route: string; headers?: Record<string, string>; rewrite?: string }>;
+      responseOverrides: Record<string, { rewrite: string }>;
     };
     const assets = config.routes.find((route) => route.route === '/assets/*');
     const worker = config.routes.find((route) => route.route === '/sw.js');
@@ -14,5 +15,7 @@ describe('static response policy', () => {
     expect(worker?.headers['Cache-Control']).toBe('no-cache, no-store, must-revalidate');
     expect(config.globalHeaders['Content-Security-Policy']).toContain("default-src 'self'");
     expect(config.globalHeaders['Permissions-Policy']).toContain('midi=(self)');
+    expect(config.routes.find((route) => route.route === '/demo')?.rewrite).toBe('/index.html');
+    expect(config.responseOverrides['404']?.rewrite).toBe('/404.html');
   });
 });
