@@ -2,69 +2,51 @@
 
 ## Status
 
-Implementation is deployed and verified on the HTTPS product URL.
+Independent verification 4 is **FAIL** because one minor accessibility finding remains.
 
-- Implementation SHA: bcb907d88173caac5b554676e748537a7b19cc5e
-- Verification documentation SHA: 059db744a2e383d7db04313ccf9e8eba9cce1f45
-- Product URL: https://pad-light-choreographer.sociobot.in
+- Findings: 1 (`1 P3`).
+- Untested claims: 0.
+- Implementation SHA: `bcb907d88173caac5b554676e748537a7b19cc5e`.
+- Documentation baseline: `f6119bd9b628200d99c68f888a1ec3b92a308168`.
+- Live URL: <https://pad-light-choreographer.sociobot.in/>.
+- Full report: `.factory/verification-4.md`.
 
-This report is a later documentation update than the implementation commit. The release verification report records the documentation SHA and live artifact identity.
+No product code was changed during this verification.
 
-## What changed
+## Remaining finding
 
-- Added a direct, one-click /demo sandbox with two populated routines, persistent demo label, Reset demo, and Start for real.
-- Isolated demo IndexedDB in demo:pad-light-choreographer. The real workspace remains pad-light-choreographer.
-- Added .factory/demo.md, .factory/claims.json, .factory/copy-audit.md, and a verb-first catalog description.
-- Replaced hash states with /, /arrange, /connect, /demo, /demo/arrange, and /demo/connect. Navigation now uses history entries, route-specific titles, focus transfer to the page heading, and a polite route announcement.
-- Rewrote the first screen in plain words. It states the job, audience, first action, action result, privacy, offline, and price facts.
-- Added How it works, product limits, privacy information, a consistent footer, metadata, robots, sitemap, social image, and a styled HTTP 404 page.
-- Updated Privacy and Terms with the standard header, navigation, footer, skip link, metadata, and 44 px link targets.
-- Added a built-artifact static test server so browser tests verify deep routes and a real 404 response.
-- Kept the existing conservative Web MIDI implementation: non-SysEx access and opt-in note-on/note-off output only.
+On `/privacy/` at a 390 × 844 phone viewport, the inline **project repository** contact link measures 173.39 × 19 px. The product contract requires a 44 × 44 px minimum touch target. Give that link a 44 px hit area and rerun verification.
 
-## Review finding disposition
+All other checked product, legal, demo, and 404 controls meet the touch-target baseline.
 
-| Finding | Disposition | Evidence |
-| --- | --- | --- |
-| Missing one-click sample and isolated storage | Resolved | Demo starts from /demo, uses a separate database, and browser coverage saves real data, changes demo data, resets it, and returns to intact real data. |
-| Missing claim manifest and tagged tests | Resolved | Eight declared claim commands in .factory/claims.json all passed from a clean clone. |
-| Metaphorical first screen and missing copy audit | Resolved | The first screen has the job headline, named audience, sample action, result, and three facts. .factory/copy-audit.md records the sentence audit. |
-| Hash navigation, missing titles, focus, and announcements | Resolved | Browser coverage exercises /arrange to /connect and Back, checking URL, title, heading focus, and route status. |
-| Missing discovery, metadata, sections, footer, and 404 | Resolved | Browser coverage checks canonical/social tags, robots, sitemap, legal pages, and an HTTP 404 page. |
-| Undersized mobile and legal targets | Resolved | Header, footer, and legal links use 44 px targets. The 390 px sample action is hit-tested in the mobile suite. |
+## What passed
 
-Earlier release findings remain resolved. The browser suite explicitly checks a fresh-context offline reload, update activation messaging, mobile action hit testing, actionable malformed JSON recovery, immutable asset policy, CSP, Permissions-Policy, and a no-console-error product journey.
+- Clean detached checkout at the implementation SHA: `npm ci`, production audit, build, and the full test suite.
+- All eight exact commands declared in `.factory/claims.json`; no public claim remained untested.
+- Live desktop and 390 × 664 phone first screens state the job, audience, first action, and action result before scrolling.
+- The demo contains two populated routines, keeps its label across routes, resets, exits, and does not change the separately saved real routine.
+- Normal practice, wrong-hit recovery, invalid tempo, malformed and valid imports, boundary claim checks, route history, titles, managed focus, legal pages, links, and deliberate 404 behavior.
+- Live non-SysEx MIDI discovery and opt-in note-on/note-off behavior with a standards-shaped browser mock.
+- Fresh-context first offline reload and cue input, service-worker update regression coverage, same-origin request boundary, security headers, and immutable asset caching.
+- Factory URL smoke, route axe scans, standalone axe CLI, visible keyboard focus, reduced motion, and mobile layout checks.
+- Fresh Lighthouse mobile: 100 Performance, 100 Accessibility, 100 Best Practices; FCP 0.9 s, LCP 1.4 s, TBT 30 ms, CLS 0.
+- Live `index.html`, `sw.js`, JS, and CSS match the clean `bcb907d` build byte for byte.
 
-## Verification
+## Run the checks
 
-Clean checkout: /tmp/pad-light-clean-hrqq8g at implementation SHA bcb907d88173caac5b554676e748537a7b19cc5e.
+```sh
+npm ci
+npm audit --omit=dev
+npm run build
+npm test
+npm run test:claims
+```
 
-| Check | Result |
-| --- | --- |
-| npm ci | Passed; 60 packages audited. |
-| npm audit --omit=dev | Passed; 0 production vulnerabilities. |
-| npm test | Passed; 5 unit checks plus 27 browser checks, with 1 expected mobile-only skip. |
-| npm run build | Passed; dist produced. |
-| All eight claim commands | Passed from the clean checkout. |
-| Factory URL smoke check | Passed locally for title, lang, one h1, main, image alt text, button names, and console errors. |
-| Accessibility | Passing Playwright axe scans cover demo practice, arrange, pairing, Privacy, and Terms. The standalone axe CLI could not start its Selenium Chrome in this container. |
-| Local Lighthouse 13 mobile demo | Performance 100, Accessibility 100, Best Practices 100; FCP 1.2 s, LCP 1.5 s, TBT 0 ms, CLS 0. |
-
-Built entry JavaScript is 30,211 bytes and CSS is 19,141 bytes before gzip. The 480 px hero is 15,524 bytes. These meet the static-PWA budgets.
-
-Fresh desktop and iPhone-13 contexts showed the job, audience, sample action, and action result before scrolling. The 390 × 664 phone action occupied y=538.8–585.6 and its result occupied y=597.6–619.3, both inside the 664 px viewport. Both contexts had no console errors.
+The verifier also ran each claim command separately as listed in `.factory/claims.json`.
 
 ## Known limits
 
-- No physical MIDI controller was available. Tests use a standards-shaped browser MIDI mock for the documented non-SysEx path. Vendor-specific LED protocols remain outside scope.
-- This static PWA has no backend, payment, tenant, health, restart, or rate-limit surface.
-- The product is free and has no billing offer, so billing registration metadata does not apply.
+- No physical MIDI controller was available. The documented non-SysEx Web MIDI path passed with browser mocks; proprietary controller protocols remain outside scope.
+- This static product has no backend, tenant, billing, health, restart-persistence, or rate-limit surface.
 
-## Run and deploy
-
-    npm ci
-    npm test
-    npm run test:claims
-    npm run build
-
-Deploy dist to the configured static host. staticwebapp.config.json preserves one static product, security headers, cache policy, app-route rewrites, and the 404 response.
+Evidence is stored under `/work/.evidence/verification-4/`.
