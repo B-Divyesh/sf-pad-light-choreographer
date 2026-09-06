@@ -2,13 +2,13 @@
 
 ## Status
 
-Implementation is ready and has been pushed for static deployment.
+Implementation is deployed and verified on the HTTPS product URL.
 
 - Implementation SHA: bcb907d88173caac5b554676e748537a7b19cc5e
-- Prior documentation SHA: ebac56f3748403ada1da796cf70e0068d6b72f6f
+- Verification documentation SHA: 059db744a2e383d7db04313ccf9e8eba9cce1f45
 - Product URL: https://pad-light-choreographer.sociobot.in
 
-This report is a later documentation update than the implementation commit. The release verification report records the final documentation commit and live artifact identity.
+This report is a later documentation update than the implementation commit. The release verification report records the documentation SHA and live artifact identity.
 
 ## What changed
 
